@@ -3,6 +3,7 @@ const express = require("express");
 // to access files within the project
 const path = require("path");
 const fs = require("fs");
+var uniqid = require("uniqid");
 
 //create express server
 const app = express();
@@ -15,6 +16,10 @@ const DB_FILE_PATH = path.join(__dirname, "/db/db.json");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+//setting middleware
+app.use(express.static(__dirname + "/public")); //Serves resources from public folder
+
+
 //view routes
 app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "/public/index.html"));
@@ -23,7 +28,7 @@ app.get("/notes", function (req, res) {
   res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
-//api routes
+//api routes. this route will be used by client to get all the saved notes
 app.get("/api/notes", function (req, res) {
   console.log("success");
   // read db,jason file and return the content as JSON
@@ -37,11 +42,13 @@ app.get("/api/notes", function (req, res) {
   });
 });
 
+// receive a new note from req.body and save it to db.json and return the same to the client
 app.post("/api/notes", function (req, res) {
   console.log(req.body);
   //get the new notes from req.body
   let newNote = req.body;
-  //read the existing notes from db.json and convert to object using json.parse
+  newNote.id = uniqid();
+  //read/take the existing notes from db.json and convert to object using json.parse
   let existingNotesArray;
   fs.readFile(DB_FILE_PATH, "utf8", (err, data) => {
     if (err) {
@@ -67,7 +74,31 @@ app.post("/api/notes", function (req, res) {
 });
 
 app.delete("/api/notes/:id", function (req, res) {
-  res.send("deleted");
+  console.log(req.params.id);
+  fs.readFile(DB_FILE_PATH, "utf8", (err, data) => {
+    if (err) {
+      return res.json({
+        error: "The file cannot be read",
+      });
+    }
+    let existingNotesArray = JSON.parse(data);
+    const idOfObjToRemove = req.params.id;
+    const arrayAfterDelete = existingNotesArray.filter(
+      (item) => item.id !== idOfObjToRemove
+    );
+
+    //overwrite the existing db.json with the updated array.
+    fs.writeFile(DB_FILE_PATH, JSON.stringify(arrayAfterDelete), (err) => {
+      if (err) {
+        return res.json({
+          error: "Cannot write the file",
+        });
+      }
+    });
+    res.json({
+        status : "deleting.."
+    })
+  });
 });
 
 //start the server
