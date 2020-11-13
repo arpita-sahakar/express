@@ -73,16 +73,23 @@ app.post("/api/notes", function (req, res) {
   });
 });
 
+//receives an id as path parameter
+//every notes have an unique id, compare which id matches the id that client has sent. 
+// delete the one with the match
 app.delete("/api/notes/:id", function (req, res) {
   console.log(req.params.id);
+  //read the file 
   fs.readFile(DB_FILE_PATH, "utf8", (err, data) => {
     if (err) {
       return res.json({
         error: "The file cannot be read",
       });
     }
+    // parse the file as an object as store it in a variable
     let existingNotesArray = JSON.parse(data);
+    // store the received id in a variable
     const idOfObjToRemove = req.params.id;
+    // removing the note that matches the id client has sent
     const arrayAfterDelete = existingNotesArray.filter(
       (item) => item.id !== idOfObjToRemove
     );

@@ -85,7 +85,7 @@ The following routes are used to connect frontend and backend :
 
   Contributions, issues and feature requests are welcome!
 
-  Feel free to check [issues page](https://github.com/arpita-sahakar/express/issues). You can also take a look at the [contributing guide](https://github.com/arpita-sahakar/express).
+  Feel free to check [issues page](https://github.com/arpita-sahakar/note-taker/issues). You can also take a look at the [contributing guide](https://github.com/arpita-sahakar/note-taker).
 
 
   ## Questions
@@ -98,7 +98,7 @@ The following routes are used to connect frontend and backend :
 
   Copyright © 2020 [Arpita Kar](https://github.com/arpita-sahakar).
 
-  This project is [NPM](https://github.com/arpita-sahakar/expressy/blob/main/license) licensed.
+  This project is [NPM](https://github.com/arpita-sahakar/note-taker/blob/main/license) licensed.
 
   
  
